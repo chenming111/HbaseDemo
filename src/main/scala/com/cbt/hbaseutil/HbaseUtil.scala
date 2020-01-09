@@ -19,8 +19,8 @@ object HbaseUtil {
   def main(args: Array[String]): Unit = {
     // 测试：插入一条数据
     //    putData("test" , "123" , "info" , "tt" , "this is a test")
-    putData("user_table" , "user-003" , "information" , "username" , "jack")
-    putData("user_table" , "user-003" , "information" , "gender" , "male")
+   // putData("user_table" , "user-003" , "information" , "username" , "jack")
+   // putData("user_table" , "user-003" , "information" , "gender" , "male")
     // 测试查询一条数据
     //     val data1 = getData("test", "123" , "info" , "tt")
     //     println(data1)
@@ -32,11 +32,15 @@ object HbaseUtil {
     // 测试：插入一批数据
     //    var map = Map("t1" -> "123", "t2" -> "234")
     //     putMapData("test", "123", "info", map)
+    //val map = Map("phone"->"13617891000","email" ->"123456@qq.com")
+   // putMapData("user_table","user-003","contact",map)
+    //val map = Map("address"->"tianjin","school" ->"ustc")
+    //putMapData("user_table","user-003","contact",map)
 
     // 测试：查询数据
     //    println(getData("test", "123", "info", "t1"))
     //    println(getData("test", "123", "info", "t2"))
-
+    println(getData("user_table","user-003","contact","phone"))
     // 测试：删除一条数据
     //    deleteData("test", "123", "info")
   }
@@ -82,10 +86,12 @@ object HbaseUtil {
       val get: Get = new Get(bytesRowkey)
       val result: Result = table.get(get)
       val values: Array[Byte] = result.getValue(Bytes.toBytes(columnFamily), Bytes.toBytes(column.toString))
-
       if (values != null && values.size > 0) {
         tmp = Bytes.toString(values)
+      }else {
+        println("你查找的数据不存在，请仔细核对参数-表名,rowkey,列簇,列名")
       }
+
     } catch {
       case e: Exception => e.printStackTrace()
     } finally {
