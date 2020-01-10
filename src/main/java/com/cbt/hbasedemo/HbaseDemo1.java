@@ -1,11 +1,13 @@
 package com.cbt.hbasedemo;
 
 import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.hbase.*;
 import org.apache.hadoop.hbase.client.*;
 import org.apache.hadoop.hbase.util.Bytes;
 
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -53,9 +55,11 @@ public class HbaseDemo1 {
 
     }
     //连接集群
-    public static Connection initHbase() throws IOException {
+    public static Connection initHbase() throws IOException, URISyntaxException {
+
 
         Configuration configuration = HBaseConfiguration.create();
+        configuration.addResource(new Path(ClassLoader.getSystemResource("hbase-site.xml").toURI()));
         configuration.set("hbase.zookeeper.property.clientPort", "2181");
         configuration.set("hbase.zookeeper.quorum", "10.10.10.16");
         //集群配置↓
@@ -66,7 +70,7 @@ public class HbaseDemo1 {
     }
 
     //创建表
-    public static void createTable(String tableNmae, String[] cols) throws IOException {
+    public static void createTable(String tableNmae, String[] cols) throws IOException, URISyntaxException {
 
         TableName tableName = TableName.valueOf(tableNmae);
         Admin admin = initHbase().getAdmin();
@@ -83,7 +87,7 @@ public class HbaseDemo1 {
     }
 
     //插入数据
-    public static void insertData(String tableName, User user) throws IOException {
+    public static void insertData(String tableName, User user) throws IOException, URISyntaxException {
         TableName tablename = TableName.valueOf(tableName);
         Put put = new Put(("user-" + user.getId()).getBytes());
         //参数：1.列族名  2.列名  3.值
@@ -106,13 +110,13 @@ public class HbaseDemo1 {
             for(Result result: resutScanner){
                 System.out.println("scan:  " + result);
             }
-        } catch (IOException e) {
+        } catch (IOException | URISyntaxException e) {
             e.printStackTrace();
         }
     }
 
     //根据rowKey进行查询
-    public static User getDataByRowKey(String tableName, String rowKey) throws IOException {
+    public static User getDataByRowKey(String tableName, String rowKey) throws IOException, URISyntaxException {
 
         Table table = initHbase().getTable(TableName.valueOf(tableName));
         Get get = new Get(rowKey.getBytes());
@@ -159,7 +163,7 @@ public class HbaseDemo1 {
             }else{
                 return result = "查询结果不存在";
             }
-        } catch (IOException e) {
+        } catch (IOException | URISyntaxException e) {
             e.printStackTrace();
         }
         return "出现异常";
@@ -202,14 +206,14 @@ public class HbaseDemo1 {
                 }
                 list.add(user);
             }
-        } catch (IOException e) {
+        } catch (IOException | URISyntaxException e) {
             e.printStackTrace();
         }
         return list;
     }
 
     //删除指定cell数据
-    public static void deleteByRowKey(String tableName, String rowKey) throws IOException {
+    public static void deleteByRowKey(String tableName, String rowKey) throws IOException, URISyntaxException {
 
         Table table = initHbase().getTable(TableName.valueOf(tableName));
         Delete delete = new Delete(Bytes.toBytes(rowKey));
@@ -226,7 +230,7 @@ public class HbaseDemo1 {
             Admin admin = initHbase().getAdmin();
             admin.disableTable(tablename);
             admin.deleteTable(tablename);
-        } catch (IOException e) {
+        } catch (IOException | URISyntaxException e) {
             e.printStackTrace();
         }
     }

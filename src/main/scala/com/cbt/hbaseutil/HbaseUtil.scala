@@ -40,7 +40,7 @@ object HbaseUtil {
     // 测试：查询数据
     //    println(getData("test", "123", "info", "t1"))
     //    println(getData("test", "123", "info", "t2"))
-    println(getData("user_table","user-003","contact","phone"))
+    println(getData("user_table","user-003","contact","address"))
     // 测试：删除一条数据
     //    deleteData("test", "123", "info")
   }
