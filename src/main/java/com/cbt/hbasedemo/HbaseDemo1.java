@@ -60,6 +60,7 @@ public class HbaseDemo1 {
 
         Configuration configuration = HBaseConfiguration.create();
         configuration.addResource(new Path(ClassLoader.getSystemResource("hbase-site.xml").toURI()));
+        configuration.addResource(new Path(ClassLoader.getSystemResource("core-site.xml").toURI()));
         configuration.set("hbase.zookeeper.property.clientPort", "2181");
         configuration.set("hbase.zookeeper.quorum", "10.10.10.16");
         //集群配置↓
